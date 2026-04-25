@@ -30,14 +30,18 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "easy to way" },
+      { name: "description", content: "Easy Way AI is a ChatGPT-based application for creating AI-powered chat experiences." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "easy to way" },
+      { property: "og:description", content: "Easy Way AI is a ChatGPT-based application for creating AI-powered chat experiences." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "easy to way" },
+      { name: "twitter:description", content: "Easy Way AI is a ChatGPT-based application for creating AI-powered chat experiences." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/fccf9036-8dcb-47fe-9feb-3f0f27915da0/id-preview-dc6ae7cb--dafa57f4-7802-42df-9e13-60c00458ad99.lovable.app-1777099011547.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/fccf9036-8dcb-47fe-9feb-3f0f27915da0/id-preview-dc6ae7cb--dafa57f4-7802-42df-9e13-60c00458ad99.lovable.app-1777099011547.png" },
     ],
     links: [
       {
