@@ -11,13 +11,13 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Easy to Way — Your AI assistant" },
+      { title: "Easy Way — Your colorful AI assistant" },
       {
         name: "description",
         content:
-          "Easy to Way is a vibrant AI chatbot that answers questions, writes content and helps you get things done — fast.",
+          "Easy Way is a vibrant, colorful AI chatbot that answers questions, writes content and helps you get things done — fast.",
       },
-      { property: "og:title", content: "Easy to Way — Your AI assistant" },
+      { property: "og:title", content: "Easy Way — Your colorful AI assistant" },
       {
         property: "og:description",
         content: "A bold, colorful AI chatbot. Ask anything, get clear answers.",
@@ -98,8 +98,13 @@ function Index() {
               <Sparkles className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-bold leading-tight">Easy to Way</h1>
-              <p className="text-xs text-muted-foreground">Your AI companion</p>
+              <h1
+                className="bg-clip-text text-lg font-bold leading-tight text-transparent"
+                style={{ backgroundImage: "var(--gradient-hero)" }}
+              >
+                Easy Way
+              </h1>
+              <p className="text-xs text-muted-foreground">Your colorful AI companion</p>
             </div>
           </div>
           {!isEmpty && (
@@ -139,7 +144,7 @@ function Index() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ask Easy to Way anything..."
+              placeholder="Ask Easy Way anything..."
               rows={1}
               className="max-h-40 min-h-[40px] flex-1 resize-none border-0 bg-transparent shadow-none focus-visible:ring-0"
               disabled={isLoading}
@@ -156,7 +161,7 @@ function Index() {
             </Button>
           </div>
           <p className="mt-2 text-center text-xs text-muted-foreground">
-            Easy to Way may make mistakes. Verify important info.
+            Easy Way may make mistakes. Verify important info.
           </p>
         </div>
       </div>
@@ -177,7 +182,7 @@ function EmptyState({ onPick }: { onPick: (s: string) => void }) {
         className="bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl"
         style={{ backgroundImage: "var(--gradient-hero)" }}
       >
-        Easy to Way
+        Easy Way
       </h2>
       <p className="mt-3 max-w-md text-base text-muted-foreground">
         Your bold, colorful AI assistant. Ask anything — answers, ideas, code, plans.
