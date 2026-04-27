@@ -39,7 +39,7 @@ export const Route = createRootRoute({
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "Easy Way" },
-      { name: "twitter:description", content: "Easy Way AI is a ChatGPT-based application for creating AI-powered chat experiences." },
+      { name: "twitter:description", content: "Easy Way AI is a colorful ChatGPT-based application for creating AI-powered chat experiences." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/fccf9036-8dcb-47fe-9feb-3f0f27915da0/id-preview-dc6ae7cb--dafa57f4-7802-42df-9e13-60c00458ad99.lovable.app-1777099011547.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/fccf9036-8dcb-47fe-9feb-3f0f27915da0/id-preview-dc6ae7cb--dafa57f4-7802-42df-9e13-60c00458ad99.lovable.app-1777099011547.png" },
     ],
