@@ -1,204 +1,114 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
-import { Send, Sparkles, Trash2 } from "lucide-react";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Sparkles, ArrowRight, GraduationCap, HeartPulse, Briefcase, Plane, Layers, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
-import { ChatMessage, type ChatMessageData } from "@/components/ChatMessage";
-import { streamChat } from "@/lib/chat";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
-  component: Index,
+  component: Landing,
   head: () => ({
     meta: [
       { title: "Easy Way — Your colorful AI assistant" },
       {
         name: "description",
         content:
-          "Easy Way is a vibrant, colorful AI chatbot that answers questions, writes content and helps you get things done — fast.",
+          "Easy Way is a vibrant AI assistant powered by GPT-5. Get help with education, health, business, travel and more.",
       },
       { property: "og:title", content: "Easy Way — Your colorful AI assistant" },
       {
         property: "og:description",
-        content: "A bold, colorful AI chatbot. Ask anything, get clear answers.",
+        content: "A bold, colorful AI chatbot powered by GPT-5. Ask anything across topics that matter.",
       },
     ],
   }),
 });
 
-const SUGGESTIONS = [
-  "Explain quantum computing simply",
-  "Write a poem about the ocean",
-  "Plan a 3-day trip to Tokyo",
-  "Help me debug a React useEffect",
+const FEATURES = [
+  { icon: GraduationCap, label: "Education & Learning", color: "from-blue-500 to-cyan-400" },
+  { icon: HeartPulse, label: "Health & Wellness", color: "from-pink-500 to-rose-400" },
+  { icon: Briefcase, label: "Business & Career", color: "from-amber-500 to-orange-400" },
+  { icon: Plane, label: "Travel & Lifestyle", color: "from-emerald-500 to-teal-400" },
+  { icon: Layers, label: "Multiple Categories", color: "from-violet-500 to-fuchsia-400" },
+  { icon: Sparkles, label: "Custom Topics", color: "from-indigo-500 to-purple-400" },
 ];
 
-function Index() {
-  const [messages, setMessages] = useState<ChatMessageData[]>([]);
-  const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
+function Landing() {
+  const navigate = useNavigate();
+  const [authed, setAuthed] = useState(false);
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages]);
+    supabase.auth.getSession().then(({ data }) => setAuthed(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setAuthed(!!s));
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
-  const send = async (text: string) => {
-    const trimmed = text.trim();
-    if (!trimmed || isLoading) return;
-
-    const userMsg: ChatMessageData = { role: "user", content: trimmed };
-    const next = [...messages, userMsg];
-    setMessages([...next, { role: "assistant", content: "" }]);
-    setInput("");
-    setIsLoading(true);
-
-    let assistantSoFar = "";
-    await streamChat({
-      messages: next,
-      onDelta: (chunk) => {
-        assistantSoFar += chunk;
-        setMessages((prev) => {
-          const copy = [...prev];
-          copy[copy.length - 1] = { role: "assistant", content: assistantSoFar };
-          return copy;
-        });
-      },
-      onDone: () => setIsLoading(false),
-      onError: ({ status, message }) => {
-        setIsLoading(false);
-        setMessages((prev) => prev.slice(0, -1));
-        if (status === 429) toast.error("Too many requests. Please wait a moment.");
-        else if (status === 402)
-          toast.error("AI credits exhausted. Add credits in Settings → Workspace → Usage.");
-        else toast.error(message || "Something went wrong");
-      },
-    });
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      send(input);
-    }
-  };
-
-  const isEmpty = messages.length === 0;
+  const cta = authed ? "/topics" : "/login";
 
   return (
-    <div className="flex h-screen flex-col">
-      {/* Header */}
-      <header className="border-b border-border/50 backdrop-blur-md">
-        <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-4 py-4">
-          <div className="flex items-center gap-3">
-            <div
-              className="flex h-10 w-10 items-center justify-center rounded-xl shadow-[var(--shadow-glow)]"
-              style={{ background: "var(--gradient-hero)" }}
-            >
-              <Sparkles className="h-5 w-5 text-white" />
-            </div>
-            <div>
-              <h1
-                className="bg-clip-text text-lg font-bold leading-tight text-transparent"
-                style={{ backgroundImage: "var(--gradient-hero)" }}
-              >
-                Easy Way
-              </h1>
-              <p className="text-xs text-muted-foreground">Your colorful AI companion</p>
-            </div>
+    <div className="min-h-screen" style={{ background: "var(--gradient-bg)" }}>
+      <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-5">
+        <div className="flex items-center gap-3">
+          <div
+            className="flex h-10 w-10 items-center justify-center rounded-xl shadow-[var(--shadow-glow)]"
+            style={{ background: "var(--gradient-hero)" }}
+          >
+            <Sparkles className="h-5 w-5 text-white" />
           </div>
-          {!isEmpty && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setMessages([])}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <Trash2 className="h-4 w-4" />
-              <span className="hidden sm:inline">New chat</span>
-            </Button>
-          )}
+          <span
+            className="bg-clip-text text-lg font-bold text-transparent"
+            style={{ backgroundImage: "var(--gradient-hero)" }}
+          >
+            Easy Way
+          </span>
         </div>
+        <Link to={cta}>
+          <Button variant="ghost" size="sm">
+            {authed ? "Open app" : "Sign in"} <ArrowRight className="ml-1 h-4 w-4" />
+          </Button>
+        </Link>
       </header>
 
-      {/* Messages */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-3xl px-4 py-6">
-          {isEmpty ? (
-            <EmptyState onPick={(s) => send(s)} />
-          ) : (
-            <div className="flex flex-col gap-5">
-              {messages.map((m, i) => (
-                <ChatMessage key={i} message={m} />
-              ))}
-            </div>
-          )}
+      <main className="mx-auto w-full max-w-6xl px-4 pt-10 pb-16 text-center sm:pt-16">
+        <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-xs font-medium backdrop-blur">
+          <Zap className="h-3.5 w-3.5 text-primary" /> Powered by GPT-5
         </div>
-      </div>
-
-      {/* Composer */}
-      <div className="border-t border-border/50 bg-background/60 backdrop-blur-md">
-        <div className="mx-auto w-full max-w-3xl px-4 py-4">
-          <div className="flex items-end gap-2 rounded-2xl border border-border bg-card p-2 shadow-lg focus-within:ring-2 focus-within:ring-primary/40">
-            <Textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Ask Easy Way anything..."
-              rows={1}
-              className="max-h-40 min-h-[40px] flex-1 resize-none border-0 bg-transparent shadow-none focus-visible:ring-0"
-              disabled={isLoading}
-            />
-            <Button
-              onClick={() => send(input)}
-              disabled={!input.trim() || isLoading}
-              size="icon"
-              className="h-10 w-10 shrink-0 rounded-xl shadow-[var(--shadow-glow)]"
-              style={{ background: "var(--gradient-hero)" }}
-              aria-label="Send message"
-            >
-              <Send className="h-4 w-4 text-white" />
-            </Button>
-          </div>
-          <p className="mt-2 text-center text-xs text-muted-foreground">
-            Easy Way may make mistakes. Verify important info.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function EmptyState({ onPick }: { onPick: (s: string) => void }) {
-  return (
-    <div className="flex flex-col items-center justify-center pt-12 text-center sm:pt-20">
-      <div
-        className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl shadow-[var(--shadow-glow)]"
-        style={{ background: "var(--gradient-hero)" }}
-      >
-        <Sparkles className="h-8 w-8 text-white" />
-      </div>
-      <h2
-        className="bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl"
-        style={{ backgroundImage: "var(--gradient-hero)" }}
-      >
-        Easy Way
-      </h2>
-      <p className="mt-3 max-w-md text-base text-muted-foreground">
-        Your bold, colorful AI assistant. Ask anything — answers, ideas, code, plans.
-      </p>
-
-      <div className="mt-10 grid w-full max-w-2xl grid-cols-1 gap-3 sm:grid-cols-2">
-        {SUGGESTIONS.map((s) => (
-          <button
-            key={s}
-            onClick={() => onPick(s)}
-            className="group rounded-xl border border-border bg-card/60 p-4 text-left text-sm transition-all hover:border-primary/60 hover:bg-card hover:shadow-[var(--shadow-glow)]"
+        <h1
+          className="mx-auto max-w-3xl bg-clip-text text-5xl font-bold leading-tight tracking-tight text-transparent sm:text-6xl"
+          style={{ backgroundImage: "var(--gradient-hero)" }}
+        >
+          Easy Way
+        </h1>
+        <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
+          A bold, colorful AI assistant. Pick a topic and start chatting — answers, ideas, plans, code.
+        </p>
+        <div className="mt-7 flex items-center justify-center gap-3">
+          <Button
+            onClick={() => navigate({ to: cta })}
+            size="lg"
+            className="rounded-xl text-white shadow-[var(--shadow-glow)]"
+            style={{ background: "var(--gradient-hero)" }}
           >
-            <span className="text-foreground group-hover:text-primary">{s}</span>
-          </button>
-        ))}
-      </div>
+            Get started <ArrowRight className="ml-1 h-4 w-4" />
+          </Button>
+        </div>
+
+        <div className="mt-14 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+          {FEATURES.map((f) => {
+            const Icon = f.icon;
+            return (
+              <div
+                key={f.label}
+                className="flex flex-col items-start gap-3 rounded-2xl border border-border bg-card/60 p-5 text-left backdrop-blur transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-[var(--shadow-glow)]"
+              >
+                <div className={`flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${f.color} text-white shadow-md`}>
+                  <Icon className="h-5 w-5" />
+                </div>
+                <div className="font-semibold">{f.label}</div>
+              </div>
+            );
+          })}
+        </div>
+      </main>
     </div>
   );
 }
