@@ -10,12 +10,9 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { messages, systemPrompt } = await req.json();
+    const { messages } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
-
-    const baseSystem =
-      "You are Easy Way, a friendly, vibrant AI assistant powered by GPT. Be helpful, clear and concise. Use markdown formatting (bold, lists, code blocks) to make answers easy to read. Keep a warm, encouraging tone.";
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -24,9 +21,13 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "openai/gpt-5",
+        model: "google/gemini-3-flash-preview",
         messages: [
-          { role: "system", content: systemPrompt ? `${baseSystem}\n\n${systemPrompt}` : baseSystem },
+          {
+            role: "system",
+            content:
+              "You are Easy to Way, a friendly, vibrant AI assistant. Be helpful, clear and concise. Use markdown formatting (bold, lists, code blocks) to make answers easy to read. Keep a warm, encouraging tone.",
+          },
           ...messages,
         ],
         stream: true,

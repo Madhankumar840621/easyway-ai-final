@@ -8,13 +8,11 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 
 export async function streamChat({
   messages,
-  systemPrompt,
   onDelta,
   onDone,
   onError,
 }: {
   messages: Msg[];
-  systemPrompt?: string;
   onDelta: (chunk: string) => void;
   onDone: () => void;
   onError: (err: { status?: number; message: string }) => void;
@@ -27,7 +25,7 @@ export async function streamChat({
         "Content-Type": "application/json",
         Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
       },
-      body: JSON.stringify({ messages, systemPrompt }),
+      body: JSON.stringify({ messages }),
     });
   } catch (e) {
     onError({ message: e instanceof Error ? e.message : "Network error" });
